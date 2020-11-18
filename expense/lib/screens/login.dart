@@ -49,7 +49,7 @@ class _LoginPageState extends State<LoginPage> {
     var url = "https://expensemonitor.000webhostapp.com/user/signin.php";
     var data = {
       "id": _idcon.text,
-      "pass": _passcon.text,
+      "password": _passcon.text,
     };
 
     var res = await http.post(url, body: data);
@@ -63,7 +63,12 @@ class _LoginPageState extends State<LoginPage> {
         Fluttertoast.showToast(
             msg: "incorrect password", toastLength: Toast.LENGTH_SHORT);
       } else {
-        print(jsonDecode(res.body));
+        if (jsonDecode(res.body) == "true") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => Homepage()),
+          );
+        }
       }
     }
 
@@ -188,13 +193,13 @@ class _LoginPageState extends State<LoginPage> {
             _validatePass = false;
           }
           if (_validateid == false && _validatePass == false) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Homepage()),
-            );
+            userSignIn();
+            //Navigator.push(
+            //context,
+            //MaterialPageRoute(builder: (context) => Homepage()),
+            //);
           }
         });
-        //userSignIn() {}
       },
       color: Colors.greenAccent,
       elevation: 0,
