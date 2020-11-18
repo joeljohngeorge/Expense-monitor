@@ -1,6 +1,7 @@
 //import 'package:expense/screens/login.dart';
 import 'dart:convert';
-
+//J$Ql)nb5k)N7q$t2s6MX
+//+5-nB&)]vJ(7Q3<3
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
@@ -39,7 +40,7 @@ class _SignuppageState extends State<Signuppage> {
     var data = {
       "id": _idcon.text,
       "name": _namecon.text,
-      "pass": _passcon.text,
+      "password": _passcon.text,
     };
 
     var res = await http.post(url, body: data);
@@ -50,7 +51,8 @@ class _SignuppageState extends State<Signuppage> {
     } else {
       if (jsonDecode(res.body) == "true") {
         Fluttertoast.showToast(
-            msg: "account created", toastLength: Toast.LENGTH_SHORT);
+            msg: "account created,please login",
+            toastLength: Toast.LENGTH_SHORT);
       } else {
         Fluttertoast.showToast(msg: "error", toastLength: Toast.LENGTH_SHORT);
       }
@@ -222,7 +224,7 @@ class _SignuppageState extends State<Signuppage> {
               _validatePass == false &&
               _validateConPass == false &&
               _validatePass == false) {
-            Scaffold.of(context).showSnackBar(snackBar);
+            registerUser();
           }
         });
         // registerUser() {}
