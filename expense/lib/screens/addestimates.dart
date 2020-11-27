@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Estimateaddpage extends StatefulWidget {
   @override
@@ -11,7 +15,7 @@ class _EstimateaddpageState extends State<Estimateaddpage> {
     'Finance',
     'Education',
     'Groceries',
-    'Food & Restaurants',
+    'Food',
     'Health',
     'Entertainment',
     'Shopping',
@@ -22,6 +26,46 @@ class _EstimateaddpageState extends State<Estimateaddpage> {
   ];
   var _currentitemselected = 'Finance';
   final formKey = GlobalKey<FormState>();
+  bool processing = false;
+  var emailId;
+
+  void getValues() async {
+    print('Getting Values from shared Preferences');
+    SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
+    emailId = sharedPrefs.getString('email');
+    print('user_name: $emailId');
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getValues();
+  }
+
+  void addestimates() async {
+    setState(() {
+      processing = true;
+    });
+    var url = "https://expensemonitor.000webhostapp.com/user/addbudget.php";
+    var data = {
+      "user_id": emailId,
+      "category": _currentitemselected,
+      "amount": _percentagecon.text,
+    };
+
+    var res = await http.post(url, body: data);
+
+    if (jsonDecode(res.body) == "true") {
+      Fluttertoast.showToast(
+          msg: "added successfully", toastLength: Toast.LENGTH_SHORT);
+    } else {
+      Fluttertoast.showToast(msg: "Error!!", toastLength: Toast.LENGTH_SHORT);
+    }
+
+    setState(() {
+      processing = false;
+    });
+  }
 
   void _submit1() {
     final form = formKey.currentState;
@@ -81,6 +125,7 @@ class _EstimateaddpageState extends State<Estimateaddpage> {
                           SizedBox(height: 30),
                           RaisedButton(
                             onPressed: () {
+                              addestimates();
                               _submit1();
                             },
                             child: new Text('Submit'),
