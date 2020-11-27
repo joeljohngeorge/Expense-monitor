@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'budgetplanning.dart';
 
 class Incomeaddpage extends StatefulWidget {
   @override
@@ -7,16 +13,116 @@ class Incomeaddpage extends StatefulWidget {
 
 class _IncomeaddpageState extends State<Incomeaddpage> {
   @override
+  var emailId;
+  bool processing = false;
+  final _incomecon = TextEditingController();
+  final formKey = GlobalKey<FormState>();
+
+  void getValues() async {
+    print('Getting Values from shared Preferences');
+    SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
+    emailId = sharedPrefs.getString('email');
+    print('user_name: $emailId');
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getValues();
+  }
+
+  void addincome() async {
+    setState(() {
+      processing = true;
+    });
+
+    var url = "https://expensemonitor.000webhostapp.com/user/addincome.php";
+    var data = {
+      "user_id": emailId,
+      "amount": _incomecon.text,
+    };
+
+    var res = await http.post(url, body: data);
+
+    if (jsonDecode(res.body) == "true") {
+      Fluttertoast.showToast(
+          msg: "income added", toastLength: Toast.LENGTH_SHORT);
+    } else {
+      if (jsonDecode(res.body) == "not updated") {
+        Fluttertoast.showToast(
+            msg: "not updated", toastLength: Toast.LENGTH_SHORT);
+      } else {
+        if (jsonDecode(res.body) == "not added") {
+          Fluttertoast.showToast(
+              msg: "not added", toastLength: Toast.LENGTH_SHORT);
+        } else {
+          Fluttertoast.showToast(
+              msg: "Error!!", toastLength: Toast.LENGTH_SHORT);
+        }
+      }
+    }
+
+    setState(() {
+      processing = false;
+    });
+  }
+
+  /*void _submit2() {
+    final form = formKey.currentState;
+    if (form.validate()) {
+      form.save();
+      Navigator.pop(context);
+    }
+  }
+*/
   Widget build(BuildContext context) {
-    final _incomecon = TextEditingController();
+    /*final _incomecon = TextEditingController();
     final formKey = GlobalKey<FormState>();
+    bool processing = false;
+    var emailId;
+
+    void getValues() async {
+      print('Getting Values from shared Preferences');
+      SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
+      emailId = sharedPrefs.getString('email');
+      print('user_name: $emailId');
+    }
+
+    @override
+    void initState() {
+      super.initState();
+      getValues();
+    }*/
+
+    // Future<Null> mail = getMethod1();
+
+    /*void addincome() async {
+      setState(() {
+        processing = true;
+      });
+
+      var url = "https://expensemonitor.000webhostapp.com/user/addincome.php";
+      var data = {
+        "user_id": emailId,
+        "amount": _incomecon.text,
+      };
+
+      var res = await http.post(url, body: data);
+
+      if (jsonDecode(res.body) == "true") {
+        Fluttertoast.showToast(
+            msg: "income added", toastLength: Toast.LENGTH_SHORT);
+      } else {
+        Fluttertoast.showToast(msg: "error", toastLength: Toast.LENGTH_SHORT);
+      }
+
+      setState(() {
+        processing = false;
+      });
+    }*/
 
     void _submit2() {
-      final form = formKey.currentState;
-      if (form.validate()) {
-        form.save();
-        Navigator.pop(context);
-      }
+      Navigator.pop(context);
     }
 
     return Scaffold(
@@ -52,7 +158,11 @@ class _IncomeaddpageState extends State<Incomeaddpage> {
                     SizedBox(height: 30),
                     RaisedButton(
                       onPressed: () {
-                        _submit2();
+                        addincome();
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (context) => Budgetplanning()),
+                        );
                       },
                       child: new Text('Submit'),
                     ),
