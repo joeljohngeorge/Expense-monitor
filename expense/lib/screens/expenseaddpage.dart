@@ -58,13 +58,28 @@ class _ExpenseaddpageState extends State<Expenseaddpage> {
 
     var res = await http.post(url, body: data);
 
-    if (jsonDecode(res.body) == "true") {
+    if (jsonDecode(res.body) == "added") {
       Fluttertoast.showToast(
-          msg: "Expense added", toastLength: Toast.LENGTH_SHORT);
+          msg: "expense added", toastLength: Toast.LENGTH_SHORT);
     } else {
-      Fluttertoast.showToast(msg: "error", toastLength: Toast.LENGTH_SHORT);
+      if (jsonDecode(res.body) == "failed") {
+        Fluttertoast.showToast(
+            msg: "Insertion failed!!!", toastLength: Toast.LENGTH_SHORT);
+      } else {
+        if (jsonDecode(res.body) == "not updated") {
+          Fluttertoast.showToast(
+              msg: "not updated", toastLength: Toast.LENGTH_SHORT);
+        } else {
+          if (jsonDecode(res.body) == "not added") {
+            Fluttertoast.showToast(
+                msg: "not added", toastLength: Toast.LENGTH_SHORT);
+          } else {
+            Fluttertoast.showToast(
+                msg: "Error!!", toastLength: Toast.LENGTH_SHORT);
+          }
+        }
+      }
     }
-    //}
   }
 
   void _submit() {

@@ -4,6 +4,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'budgetplanning.dart';
+
 class Estimateaddpage extends StatefulWidget {
   @override
   _EstimateaddpageState createState() => _EstimateaddpageState();
@@ -50,16 +52,31 @@ class _EstimateaddpageState extends State<Estimateaddpage> {
     var data = {
       "user_id": emailId,
       "category": _currentitemselected,
-      "amount": _percentagecon.text,
+      "per": _percentagecon.text,
     };
 
     var res = await http.post(url, body: data);
 
-    if (jsonDecode(res.body) == "true") {
-      Fluttertoast.showToast(
-          msg: "added successfully", toastLength: Toast.LENGTH_SHORT);
+    if (jsonDecode(res.body) == "updated") {
+      Fluttertoast.showToast(msg: "updated", toastLength: Toast.LENGTH_SHORT);
     } else {
-      Fluttertoast.showToast(msg: "Error!!", toastLength: Toast.LENGTH_SHORT);
+      if (jsonDecode(res.body) == "updation failed!!") {
+        Fluttertoast.showToast(
+            msg: "updation failed!!", toastLength: Toast.LENGTH_SHORT);
+      } else {
+        if (jsonDecode(res.body) == "budget added") {
+          Fluttertoast.showToast(
+              msg: "Added successfully", toastLength: Toast.LENGTH_SHORT);
+        } else {
+          if (jsonDecode(res.body) == "insertion failed!!!") {
+            Fluttertoast.showToast(
+                msg: "insertion failed!!!", toastLength: Toast.LENGTH_SHORT);
+          } else {
+            Fluttertoast.showToast(
+                msg: "Error!!", toastLength: Toast.LENGTH_SHORT);
+          }
+        }
+      }
     }
 
     setState(() {

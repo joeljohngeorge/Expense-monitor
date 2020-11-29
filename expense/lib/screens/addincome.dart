@@ -48,16 +48,21 @@ class _IncomeaddpageState extends State<Incomeaddpage> {
       Fluttertoast.showToast(
           msg: "income added", toastLength: Toast.LENGTH_SHORT);
     } else {
-      if (jsonDecode(res.body) == "not updated") {
+      if (jsonDecode(res.body) == "income updated") {
         Fluttertoast.showToast(
-            msg: "not updated", toastLength: Toast.LENGTH_SHORT);
+            msg: "income updated", toastLength: Toast.LENGTH_SHORT);
       } else {
-        if (jsonDecode(res.body) == "not added") {
+        if (jsonDecode(res.body) == "not updated") {
           Fluttertoast.showToast(
-              msg: "not added", toastLength: Toast.LENGTH_SHORT);
+              msg: "not updated", toastLength: Toast.LENGTH_SHORT);
         } else {
-          Fluttertoast.showToast(
-              msg: "Error!!", toastLength: Toast.LENGTH_SHORT);
+          if (jsonDecode(res.body) == "not added") {
+            Fluttertoast.showToast(
+                msg: "not added", toastLength: Toast.LENGTH_SHORT);
+          } else {
+            Fluttertoast.showToast(
+                msg: "Error!!", toastLength: Toast.LENGTH_SHORT);
+          }
         }
       }
     }
@@ -67,14 +72,14 @@ class _IncomeaddpageState extends State<Incomeaddpage> {
     });
   }
 
-  /*void _submit2() {
+  void _submit2() {
     final form = formKey.currentState;
     if (form.validate()) {
       form.save();
       Navigator.pop(context);
     }
   }
-*/
+
   Widget build(BuildContext context) {
     /*final _incomecon = TextEditingController();
     final formKey = GlobalKey<FormState>();
@@ -121,9 +126,9 @@ class _IncomeaddpageState extends State<Incomeaddpage> {
       });
     }*/
 
-    void _submit2() {
+    /*void _submit2() {
       Navigator.pop(context);
-    }
+    }*/
 
     return Scaffold(
         appBar: AppBar(
@@ -159,10 +164,7 @@ class _IncomeaddpageState extends State<Incomeaddpage> {
                     RaisedButton(
                       onPressed: () {
                         addincome();
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                              builder: (context) => Budgetplanning()),
-                        );
+                        _submit2();
                       },
                       child: new Text('Submit'),
                     ),
