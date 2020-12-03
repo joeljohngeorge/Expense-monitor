@@ -3,6 +3,7 @@ import 'package:expense/screens/budget.dart';
 import 'package:http/http.dart' as http;
 import 'expenses.dart';
 import 'package:expense/screens/review.dart';
+import 'package:expense/screens/income.dart';
 
 class Services {
   static const ROOT =
@@ -13,10 +14,11 @@ class Services {
   //static const String _UPDATE_EMP_ACTION = 'UPDATE_EMP';
   static const String _DELETE_EMP_ACTION = 'DELETE_EMP';
 
-  static Future<List<Expenses>> getExpenses() async {
+  static Future<List<Expenses>> getExpenses(String userid) async {
     try {
       var map = new Map<String, dynamic>();
       map["action"] = _GET_ACTION;
+      map["user_id"] = userid;
       final response = await http.post(ROOT, body: map);
       print("getExpenses>> Response:: ${response.body}");
       if (response.statusCode == 200) {
@@ -35,10 +37,11 @@ class Services {
     return parsed.map<Expenses>((json) => Expenses.fromJson(json)).toList();
   }
 
-  static Future<List<Budget>> getBudget() async {
+  static Future<List<Budget>> getBudget(String userid) async {
     try {
       var map = new Map<String, dynamic>();
       map["action"] = _GET_ACTION;
+      map["user_id"] = userid;
       final response = await http.post(
           'https://expensemonitor.000webhostapp.com/user/displaybudget.php',
           body: map);
@@ -59,10 +62,12 @@ class Services {
     return parsed.map<Budget>((json) => Budget.fromJson(json)).toList();
   }
 
-  static Future<List<Review>> getReview() async {
+  static Future<List<Review>> getReview(String userid, String month) async {
     try {
       var map = new Map<String, dynamic>();
       map["action"] = _GET_ACTION;
+      map["user_id"] = userid;
+      map["month"] = month;
       final response = await http.post(
           "https://expensemonitor.000webhostapp.com/user/displayreview.php",
           body: map);
@@ -94,6 +99,29 @@ class Services {
     } catch (e) {
       return 'error';
     }
+  }
+
+  static Future<List<Income>> getIncome(String userid) async {
+    try {
+      var map = new Map<String, dynamic>();
+      map["action"] = _GET_ACTION;
+      map["user_id"] = userid;
+      final response = await http.post(ROOT, body: map);
+      print("getIncome>> Response:: ${response.body}");
+      if (response.statusCode == 200) {
+        List<Income> list = parsePho(response.body);
+        return list;
+      } else {
+        throw List<Income>();
+      }
+    } catch (e) {
+      return List<Income>();
+    }
+  }
+
+  static List<Income> parsePho(String responseBody) {
+    final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
+    return parsed.map<Expenses>((json) => Expenses.fromJson(json)).toList();
   }
 
   /*static Future<String> createTable() async {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:expense/screens/income.dart';
+//import 'expenses.dart';
 import 'review.dart';
 import 'services.dart';
 import 'package:http/http.dart' as http;
@@ -12,20 +12,20 @@ class Analysispage extends StatefulWidget {
 
 class _AnalysispageState extends State<Analysispage> {
   var _months = [
-    'January',
-    'February',
-    'March',
-    'April',
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
     'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December'
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sept',
+    'Oct',
+    'Nov',
+    'Dec'
   ];
-  var _currentitemselected = 'January';
+  var _currentitemselected = 'Jan';
 
   var emailId;
   List<Review> _review;
@@ -130,21 +130,12 @@ class _AnalysispageState extends State<Analysispage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Center(
-            child: Text("Analysis & Review",
-                style: TextStyle(
-                  fontSize: 18,
-                )),
-          ),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.refresh),
-              onPressed: () {
-                _getReview();
-              },
-            ),
-          ],
-        ),
+            title: Center(
+          child: Text("Analysis & Review",
+              style: TextStyle(
+                fontSize: 18,
+              )),
+        )),
         body: SingleChildScrollView(
           child: Container(
             height: 3500,
@@ -173,17 +164,17 @@ class _AnalysispageState extends State<Analysispage> {
                 DataTable(
                   columns: [
                     DataColumn(
-                        label: Text("Category"),
+                        label: Text("CATEGORY"),
                         numeric: false,
                         tooltip: "This is the CATEGORY"),
                     DataColumn(
                         label: Text(
-                          "Estimated",
+                          "AMOUNT ESTIMATED",
                         ),
                         numeric: false,
                         tooltip: "This is the AMOUNT ESTIMATED"),
                     DataColumn(
-                        label: Text("Spent"),
+                        label: Text("AMOUNT SPENT"),
                         numeric: false,
                         tooltip: "This is the AMOUNT SPEND"),
                   ],

@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:expense/screens/homepage.dart';
 import 'package:expense/screens/signuppage.dart';
 import 'package:flutter/material.dart';
@@ -35,11 +35,26 @@ class _LoginPageState extends State<LoginPage> {
   final _idcon = TextEditingController();
   bool _validatePass = false;
   bool _validateid = false;
+  String namekey = "email";
 
   void _toggleVisibility() {
     setState(() {
       _isHidden = !_isHidden;
     });
+  }
+
+  //void setValues() async {
+  //SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
+  // set values
+  //sharedPrefs.setString('user_id', _idcon.text);
+  //}
+
+  void setValues(email) async {
+    SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
+    // set values
+
+    sharedPrefs.setString('email', email);
+    print('Values Set in Shared Prefs!!');
   }
 
   void userSignIn() async {
@@ -64,6 +79,8 @@ class _LoginPageState extends State<LoginPage> {
             msg: "incorrect password", toastLength: Toast.LENGTH_SHORT);
       } else {
         if (jsonDecode(res.body) == "true") {
+          Fluttertoast.showToast(
+              msg: "login successfull", toastLength: Toast.LENGTH_SHORT);
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => Homepage()),
@@ -74,6 +91,7 @@ class _LoginPageState extends State<LoginPage> {
 
     setState(() {
       processing = false;
+      setValues(_idcon.text);
     });
   }
 
@@ -92,7 +110,7 @@ class _LoginPageState extends State<LoginPage> {
             SizedBox(
               height: 20.0,
             ),
-            builduserid("User id"),
+            builduserid("Mail id"),
             SizedBox(
               height: 20.0,
             ),

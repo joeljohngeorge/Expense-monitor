@@ -20,8 +20,6 @@ class _HomepageState extends State<Homepage> {
   var emailId;
   List<Expenses> _expenses;
   GlobalKey<ScaffoldState> _scaffoldKey;
-  //TextEditingController _firstNameController;
-  //TextEditingController _lastNameController;
   Expenses _selectedexpense;
   bool _isUpdating;
   String _titleProgress;
@@ -39,11 +37,8 @@ class _HomepageState extends State<Homepage> {
     getValues();
     _expenses = [];
     _isUpdating = false;
-    //_titleProgress = widget.title;
     _scaffoldKey = GlobalKey();
-    //_firstNameController = TextEditingController();
-    //_lastNameController = TextEditingController();
-    _getExpenses();
+    _getExpenses(emailId);
   }
 
   _showProgress(String message) {
@@ -52,13 +47,11 @@ class _HomepageState extends State<Homepage> {
     });
   }
 
-  _getExpenses() {
-    //_showProgress('Loading Expenses...');
-    Services.getExpenses().then((expenses) {
+  _getExpenses(String emailId) {
+    Services.getExpenses(emailId).then((expenses) {
       setState(() {
         _expenses = expenses;
       });
-      //_showProgress(widget.title);
       print("Length: ${expenses.length}");
     });
   }
@@ -70,57 +63,10 @@ class _HomepageState extends State<Homepage> {
         setState(() {
           _expenses.remove(expenses);
         });
-        _getExpenses();
+        _getExpenses(emailId);
       }
     });
   }
-
-  /* void addexpense() async {
-    //int exp = int.parse("_expamtcon");
-    var url = "https://expensemonitor.000webhostapp.com/user/addexpense.php";
-    var data = {
-      //int exp = int.parse("_expamtcon"),
-      "user_id": emailId,
-    };
-
-    var res = await http.post(url, body: data);
-
-    /* if (jsonDecode(res.body) == "added") {
-      Fluttertoast.showToast(
-          msg: "expense added", toastLength: Toast.LENGTH_SHORT);
-    } else {
-      if (jsonDecode(res.body) == "failed") {
-        Fluttertoast.showToast(
-            msg: "Insertion failed!!!", toastLength: Toast.LENGTH_SHORT);
-      } else {
-        if (jsonDecode(res.body) == "not updated") {
-          Fluttertoast.showToast(
-              msg: "not updated", toastLength: Toast.LENGTH_SHORT);
-        } else {
-          if (jsonDecode(res.body) == "not added") {
-            Fluttertoast.showToast(
-                msg: "not added", toastLength: Toast.LENGTH_SHORT);
-          } else {
-            Fluttertoast.showToast(
-                msg: "Error!!", toastLength: Toast.LENGTH_SHORT);
-          }
-        }
-      }
-    }*/
-  }*/
-  /*_setValues(Expenses expenses) {
-    _firstNameController.text = expenses.firstName;
-    _lastNameController.text = expenses.lastName;
-    setState(() {
-      _isUpdating = true;
-    });
-  }
-  
-
-  _clearValues() {
-    _firstNameController.text = '';
-    _lastNameController.text = '';
-  }*/
 
   showSnackBar(context, message) {
     _scaffoldKey.currentState.showSnackBar(SnackBar(
@@ -220,7 +166,7 @@ class _HomepageState extends State<Homepage> {
             IconButton(
               icon: Icon(Icons.refresh),
               onPressed: () {
-                _getExpenses();
+                _getExpenses(emailId);
               },
             ),
           ],

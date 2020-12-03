@@ -78,7 +78,7 @@ class _SignuppageState extends State<Signuppage> {
             SizedBox(
               height: 20.0,
             ),
-            builduserid("User id"),
+            builduserid("Mail id"),
             SizedBox(
               height: 20.0,
             ),

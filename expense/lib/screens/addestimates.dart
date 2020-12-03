@@ -14,6 +14,7 @@ class Estimateaddpage extends StatefulWidget {
 class _EstimateaddpageState extends State<Estimateaddpage> {
   final _percentagecon = TextEditingController();
   var _categories = [
+    'Savings',
     'Finance',
     'Education',
     'Groceries',
@@ -26,7 +27,7 @@ class _EstimateaddpageState extends State<Estimateaddpage> {
     'Water Bill',
     'Others'
   ];
-  var _currentitemselected = 'Finance';
+  var _currentitemselected = 'Savings';
   final formKey = GlobalKey<FormState>();
   bool processing = false;
   var emailId;

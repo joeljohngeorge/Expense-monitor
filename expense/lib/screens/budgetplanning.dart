@@ -1,9 +1,12 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'budget.dart';
+import 'income.dart';
 import 'services.dart';
 import 'package:expense/screens/addincome.dart';
 import 'package:expense/screens/addestimates.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class Budgetplanning extends StatefulWidget {
   @override
@@ -11,26 +14,73 @@ class Budgetplanning extends StatefulWidget {
 }
 
 class _BudgetplanningState extends State<Budgetplanning> {
+  var emailId;
+  var index = 0;
+  List<Income> _income; //= List<Income>();
   List<Budget> _budget;
+  //List<Income> _income;
   GlobalKey<ScaffoldState> _scaffoldKey;
   bool _isUpdating;
 
   @override
   void initState() {
+    fetchIncome(emailId).then((value) {
+      setState(() {
+        _income.addAll(value);
+      });
+    });
     super.initState();
-    //getValues();
+    getValues();
     _budget = [];
+    //_income = [];
     _isUpdating = false;
-    //_titleProgress = widget.title;
     _scaffoldKey = GlobalKey();
-    //_firstNameController = TextEditingController();
-    //_lastNameController = TextEditingController();
     _getBudget();
+    // _getIncome();
+  }
+
+  void getValues() async {
+    print('Getting Values from shared Preferences');
+    SharedPreferences sharedPrefs = await SharedPreferences.getInstance();
+    emailId = sharedPrefs.getString('email');
+    print('user_name: $emailId');
+  }
+
+  void _getIncome() async {
+    setState(() {
+      // processing = true;
+    });
+    var url = "https://expensemonitor.000webhostapp.com/user/displayincome.php";
+    var data = {
+      "user_id": emailId,
+      //"category": _currentitemselected,
+      //"per": _percentagecon.text,
+    };
+
+    var res = await http.post(url, body: data);
+  }
+
+  Future<List<Income>> fetchIncome(String emailId) async {
+    var url = 'https://expensemonitor.000webhostapp.com/user/displayincome.php';
+    var data = {
+      "user_id": emailId,
+    };
+    var res = await http.post(url, body: data);
+
+    var income = List<Income>();
+
+    if (res.statusCode == 200) {
+      var incomeJson = json.decode(res.body);
+      for (var incomeJson in incomeJson) {
+        income.add(Income.fromJson(incomeJson));
+      }
+    }
+    return income;
   }
 
   _getBudget() {
     //_showProgress('Loading Expenses...');
-    Services.getBudget().then((budget) {
+    Services.getBudget(emailId).then((budget) {
       setState(() {
         _budget = budget;
       });
@@ -54,6 +104,7 @@ class _BudgetplanningState extends State<Budgetplanning> {
               icon: Icon(Icons.refresh),
               onPressed: () {
                 _getBudget();
+                // _getIncome();
               },
             ),
           ],
@@ -92,7 +143,7 @@ class _BudgetplanningState extends State<Budgetplanning> {
                 SizedBox(
                   height: 30,
                 ),
-                DataTable(columns: <DataColumn>[
+                /* DataTable(columns: <DataColumn>[
                   DataColumn(
                     label: Text(
                       'Income',
@@ -103,7 +154,7 @@ class _BudgetplanningState extends State<Budgetplanning> {
                   ),
                 ], rows: <DataRow>[
                   DataRow(cells: [
-                    DataCell(Text('30000')),
+                    DataCell(Text("30000")),
                   ]),
                 ]),
                 SizedBox(
@@ -120,7 +171,7 @@ class _BudgetplanningState extends State<Budgetplanning> {
                   ),
                 ], rows: <DataRow>[
                   DataRow(cells: [
-                    DataCell(Text('25500')),
+                    DataCell(Text('25000')),
                   ]),
                 ]),
                 SizedBox(
@@ -139,7 +190,7 @@ class _BudgetplanningState extends State<Budgetplanning> {
                   DataRow(cells: [
                     DataCell(Text('3000')),
                   ]),
-                ]),
+                ]),*/
                 SizedBox(
                   height: 30,
                 ),
@@ -177,3 +228,37 @@ class _BudgetplanningState extends State<Budgetplanning> {
         ));
   }
 }
+
+/*override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: Text('Flutter listview with json'),
+        ),
+        body: ListView.builder(
+          itemBuilder: (context, index) {
+            return Card(
+              child: Padding(
+                padding: const EdgeInsets.only(
+                    top: 32.0, bottom: 32.0, left: 16.0, right: 16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      _income[index].title,
+                      style:
+                          TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      _income[index].text,
+                      style: TextStyle(color: Colors.grey.shade600),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+          itemCount: _income.length,
+        ));
+  }
+}*/
